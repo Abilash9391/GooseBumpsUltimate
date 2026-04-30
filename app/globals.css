@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================
+   DESIGN TOKENS
+========================= */
+
+@layer base {
+  :root {
+    /* FONTS */
+    --font-display: 'Oswald', system-ui, sans-serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+
+    /* BRAND COLORS */
+    --primary: 358 83% 53%; /* #EC2127 */
+    --primary-foreground: 0 0% 96%;
+
+    --secondary: 238 52% 38%; /* blue */
+    --secondary-foreground: 0 0% 96%;
+
+    --accent: 238 52% 38%;
+    --accent-foreground: 0 0% 96%;
+
+    --background: 0 0% 100%;
+    --foreground: 228 30% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 228 30% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 228 30% 10%;
+
+    --muted: 228 15% 92%;
+    --muted-foreground: 228 10% 40%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 96%;
+
+    --border: 228 15% 85%;
+    --input: 228 15% 92%;
+
+    --ring: 358 83% 53%;
+
+    --radius: 0.5rem;
+
+    /* SIDEBAR */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 228 30% 10%;
+
+    --sidebar-primary: 358 83% 53%;
+    --sidebar-primary-foreground: 0 0% 96%;
+
+    --sidebar-accent: 238 52% 38%;
+    --sidebar-accent-foreground: 0 0% 96%;
+
+    --sidebar-border: 228 15% 85%;
+    --sidebar-ring: 358 83% 53%;
+
+    /* =========================
+       MOTION TOKENS
+    ========================== */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+
+    --duration-fast: 120ms;
+    --duration-normal: 180ms;
+    --duration-slow: 260ms;
+  }
+
+  .dark {
+    --background: 228 30% 10%;
+    --foreground: 0 0% 96%;
+
+    --card: 228 25% 14%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 228 25% 14%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 358 83% 60%;
+    --primary-foreground: 0 0% 96%;
+
+    --secondary: 238 52% 45%;
+    --secondary-foreground: 0 0% 96%;
+
+    --accent: 238 52% 45%;
+    --accent-foreground: 0 0% 96%;
+
+    --muted: 228 18% 20%;
+    --muted-foreground: 0 0% 65%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 96%;
+
+    --border: 228 20% 25%;
+    --input: 228 18% 18%;
+
+    --ring: 358 83% 60%;
+
+    --sidebar-background: 228 28% 12%;
+    --sidebar-foreground: 0 0% 96%;
+
+    --sidebar-primary: 358 83% 60%;
+    --sidebar-primary-foreground: 0 0% 96%;
+
+    --sidebar-accent: 238 52% 45%;
+    --sidebar-accent-foreground: 0 0% 96%;
+
+    --sidebar-border: 228 20% 25%;
+    --sidebar-ring: 358 83% 60%;
+  }
+}
+
+/* =========================
+   BASE STYLES
+========================= */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+  }
+}
+
+/* =========================
+   CONTROLLED TRANSITIONS
+========================= */
+
+@layer base {
+  button,
+  input,
+  textarea,
+  select,
+  a {
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out);
+  }
+}
+
+/* =========================
+   BUTTON INTERACTIONS
+========================= */
+
+@layer base {
+  button {
+    position: relative;
+  }
+
+  button:active {
+    transform: scale(0.97);
+  }
+
+  button[class*="bg-primary"] {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  button[class*="bg-primary"]:hover {
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.12),
+      0 0 0 1px hsl(358 83% 53% / 0.25);
+  }
+}
+
+/* =========================
+   HOVER SURFACE (CARDS)
+========================= */
+
+@layer utilities {
+  .hover-surface {
+    transition: transform var(--duration-normal) var(--ease-out),
+                box-shadow var(--duration-normal) var(--ease-out);
+  }
+
+  .hover-surface:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  }
+}
+
+/* =========================
+   FOCUS STATES
+========================= */
+
+@layer base {
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px hsl(var(--background)),
+      0 0 0 4px hsl(var(--ring));
+  }
+}
+
+/* =========================
+   PAGE ENTRY
+========================= */
+
+@layer base {
+  main {
+    animation: pageEnter 0.4s var(--ease-out);
+  }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   SURFACE SYSTEM
+========================= */
+
+@layer utilities {
+  .surface {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.75rem;
+  }
+
+  .surface-subtle {
+    background: hsl(var(--muted));
+  }
+}
+
+/* =========================
+   LINK MICRO-INTERACTION
+========================= */
+
+@layer base {
+  a {
+    position: relative;
+  }
+
+  a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 0%;
+    background: hsl(var(--primary));
+    transition: width var(--duration-normal) var(--ease-out);
+  }
+
+  a:hover::after {
+    width: 100%;
+  }
+}
+
+/*SMOOTH COLOR TRANSITIONS*/
+
+* {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+}

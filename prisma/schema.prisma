@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+ //  ENUM
+enum Role {
+  ADMIN
+  USER
+  AUTHOR
+}
+enum OtpType {
+  LOGIN
+  RESET
+}
+
+ //  USER
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  avatar    String?
+  bio       String?
+
+  role      Role     @default(USER)
+
+  // 🔐 OTP (for login / password reset)
+  otpHash   String?      // store hashed OTP (NOT plain text)
+  otpExpiry DateTime?    // expiry time
+  otpType   OtpType?     // LOGIN or RESET (optional but useful)
+  otpAttempts Int        @default(0) // brute-force protection
+  otpVerified Boolean?  @default(false)
+  otpLockedUntil DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts     Post[]
+  comments  Comment[]
+  ratings   Rating[]
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+
+  action    String
+  entity    String?
+  entityId  String?
+
+  before    Json?
+  after     Json?
+
+  ip        String?
+  userAgent String?
+  deviceId  String?
+
+  status    String? // SUCCESS | FAILED | WARNING
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  success   Boolean
+  ip        String
+  userAgent String
+  createdAt DateTime @default(now())
+}
+
+model Device {
+  id        String   @id @default(cuid())
+  userId    String
+  deviceId  String
+  ip        String
+  name      String?
+  lastSeen  DateTime @default(now())
+}
+
+//   BLOG
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments  Comment[]
+  ratings   Rating[]
+  tags      Tag[]
+
+  @@map("posts")
+}
+
+model PageView {
+  id          String   @id @default(cuid())
+  path        String
+  anonymousId String
+  sessionId   String
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([anonymousId])
+  @@index([sessionId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+
+  postId    String
+  authorId  String
+
+  post      Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("comments")
+}
+
+model Rating {
+  id     String @id @default(cuid())
+  value  Int
+
+  postId String
+  userId String
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("ratings")
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+
+  posts Post[]
+
+  @@map("tags")
+}
